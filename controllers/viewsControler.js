@@ -36,6 +36,12 @@ exports.getLoginForm = (req, res) => {
   });
 };
 
+exports.getSignupForm = (req, res) => {
+  res.status(200).render('signup', {
+    title: 'Create your account'
+  });
+};
+
 exports.getAccount = (req, res) => {
   res.status(200).render('account', {
     title: 'Your Account'
@@ -47,16 +53,14 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
   const bookings = await Booking.find({ user: req.user.id });
 
   //find tours with the returned ids
-  const tourIds = bookings.map(el => 
-    el.tour
-  );
+  const tourIds = bookings.map(el => el.tour);
 
   const tours = await Tour.find({ _id: { $in: tourIds } });
 
   res.status(200).render('overview', {
     title: 'My booking',
     tours
-  })
+  });
 });
 
 exports.updateUserData = catchAsync(async (req, res, next) => {
