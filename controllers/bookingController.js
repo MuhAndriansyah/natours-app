@@ -7,12 +7,17 @@ const catchAsync = require('../utilities/catchAsync');
 const AppError = require('../utilities/appError');
 const factory = require('./handlerFactory.js');
 
-exports.getCheckoutSession = async (req, res, next) => {
-  // Get the currently booked tour
+exports.getCheckoutSession = catchAsync(async (req, res, next) => {
+  // 1) Get the currently booked tour
   const tour = await Tour.findById(req.params.tourId);
-  // cretae checkout session
+  // console.log(tour);
+
+  // 2) Create checkout session
   const session = await stripe.checkout.sessions.create({
-    payment_method_types: [`card`],
+    payment_method_types: ['card'],
+    // success_url: `${req.protocol}://${req.get('host')}/my-tours/?tour=${
+    //   req.params.tourId
+    // }&user=${req.user.id}&price=${tour.price}`,
     success_url: `${req.protocol}://${req.get('host')}/my-tours?alert=booking`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
@@ -21,7 +26,9 @@ exports.getCheckoutSession = async (req, res, next) => {
       {
         name: `${tour.name} Tour`,
         description: tour.summary,
-        images: [`${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`],
+        images: [
+          `${req.protocol}://${req.get('host')}/img/tours/${tour.imageCover}`
+        ],
         amount: tour.price * 100,
         currency: 'usd',
         quantity: 1
@@ -29,12 +36,12 @@ exports.getCheckoutSession = async (req, res, next) => {
     ]
   });
 
-  // create session as response
+  // 3) Create session as response
   res.status(200).json({
     status: 'success',
     session
   });
-};
+});
 
 // exports.createBookingCheckout = catchAsync(async (req, res, next) => {
 //   //TEMPORARY KARNA TIDAK SECURE, SEMUA ORANG DAPAT MEMBUAT BOOKING
@@ -63,13 +70,13 @@ exports.webhookCheckout = (req, res, next) => {
   const signature = req.headers['stripe-signature'];
   let event;
   try {
-    event = stripe.webhooks.construc(
+    event = stripe.webhooks.constructEvent(
       req.body,
       signature,
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (error) {
-    return res.status(400).send('webhook errors: ${err.message');
+    return res.status(400).send(`webhook errors: ${err.message}`);
   }
 
   if (event.type === 'checkout.session.completed')
