@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const viewsController = require('../controllers/viewsControler');
 const authController = require('../controllers/authController');
-const bookingController = require('../controllers/bookingController');
 
-app.use(viewsController.alerts)
 
 router.get('/', authController.isLoggedIn, viewsController.overview);
+
+router.use(viewsController.alerts);
 
 router.get('/tour/:slug', authController.isLoggedIn, viewsController.getTour);
 router.get('/login', authController.isLoggedIn, viewsController.getLoginForm);
