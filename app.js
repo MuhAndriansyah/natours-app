@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 //Handling Error
 const AppError = require('./utilities/appError');
@@ -20,9 +21,13 @@ const bookingRoute = require('./routes/bookingRoutes');
 const viewRoute = require('./routes/viewRoutes');
 
 const app = express();
-app.enable('trust proxy')
+app.enable('trust proxy');
 
 // 1) Global Middleware
+app.use(cors());
+
+app.options('*', cors());
+
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 // Serving static files
@@ -84,7 +89,7 @@ app.use('/', viewRoute);
 app.use('/api/v1/tours', toursRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/reviews', reviewRoute);
-app.use('/api/v1/booking', bookingRoute)
+app.use('/api/v1/booking', bookingRoute);
 
 //Handling unhandled toutes
 // app.all('*', (req, res, next) => {
