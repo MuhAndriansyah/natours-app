@@ -20,6 +20,7 @@ const bookingRoute = require('./routes/bookingRoutes');
 const viewRoute = require('./routes/viewRoutes');
 
 const app = express();
+app.enable('trust proxy')
 
 // 1) Global Middleware
 app.set('view engine', 'pug');
