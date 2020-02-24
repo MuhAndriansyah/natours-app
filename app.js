@@ -18,6 +18,8 @@ const toursRoute = require('./routes/natourRoutes');
 const userRoute = require('./routes/userRoutes');
 const reviewRoute = require('./routes/reviewRoutes');
 const bookingRoute = require('./routes/bookingRoutes');
+const bookingController = require('../controllers/bookingController.js');
+
 const viewRoute = require('./routes/viewRoutes');
 
 const app = express();
@@ -72,9 +74,11 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
+app.post('/webhook-checkout', express.raw({type: 'application/json'}), bookingController.webhookCheckout);
+
 // Body parser, reading data from body into req.body
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // Cookie Parser
 app.use(cookieParser());
 
