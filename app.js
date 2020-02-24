@@ -18,7 +18,7 @@ const toursRoute = require('./routes/natourRoutes');
 const userRoute = require('./routes/userRoutes');
 const reviewRoute = require('./routes/reviewRoutes');
 const bookingRoute = require('./routes/bookingRoutes');
-const bookingController = require('../controllers/bookingController.js');
+const bookingController = require('../controllers/bookingController');
 
 const viewRoute = require('./routes/viewRoutes');
 

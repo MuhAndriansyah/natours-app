@@ -79,3 +79,6 @@ if (signupForm){
     signup(name, email ,password, passwordConfirm)
   });
 }
+
+const alertMessage = document.querySelector('body').dataset.alert;
+if (alertMessage) showAlert('success', alertMessage, 20);
